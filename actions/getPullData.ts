@@ -2,23 +2,44 @@ import moment from "moment";
 import prismadb from "@/lib/prismadb";
 import { PullData } from "@prisma/client";
 
-export async function getPullData(totalPullCountToday?: number): Promise<[number, { [key: string]: number }, { [key: string]: number }]> {
-
-    let pullData = await prismadb.pullData.findMany({ orderBy: { date: 'asc' } });
-
-    // When pullCountToday was provided, try and replace the value in the data retrieved from the database.
-    if (totalPullCountToday) {
-        pullData = insertLivePullCount(pullData, totalPullCountToday);
-    }
-
-    const totalPullCount = totalPullCountToday ? totalPullCountToday : (pullData.length === 0 ? 0 : pullData[pullData.length - 1].pullsTotal);
-    const pullsAccumulated = getAccumulatedPulls(pullData);
-    const pullsUnique = getUniquePulls(pullData);
-
-    return [totalPullCount, pullsAccumulated, pullsUnique]
+interface RepositoryPullData {
+    repository: string;
+    totalPullCount: number;
+    pullsAccumulated: { [key: string]: number };
+    pullsUnique: { [key: string]: number };
 }
 
-function insertLivePullCount(pullData: PullData[], totalPullCountToday: number): PullData[] {
+export async function getPullData(repositoryPullCounts?: { [key: string]: number }): Promise<RepositoryPullData[]> {
+    const repositories = ['opnform-api', 'opnform-client'];
+    
+    const repositoryData = await Promise.all(repositories.map(async (repository) => {
+        let pullData = await prismadb.pullData.findMany({ 
+            where: { repository },
+            orderBy: { date: 'asc' } 
+        });
+
+        // When pullCountToday was provided, try and replace the value in the data retrieved from the database.
+        const totalPullCountToday = repositoryPullCounts?.[repository];
+        if (totalPullCountToday) {
+            pullData = insertLivePullCount(pullData, totalPullCountToday, repository);
+        }
+
+        const totalPullCount = totalPullCountToday ? totalPullCountToday : (pullData.length === 0 ? 0 : pullData[pullData.length - 1]?.pullsTotal || 0);
+        const pullsAccumulated = getAccumulatedPulls(pullData);
+        const pullsUnique = getUniquePulls(pullData);
+
+        return {
+            repository,
+            totalPullCount,
+            pullsAccumulated,
+            pullsUnique
+        };
+    }));
+
+    return repositoryData;
+}
+
+function insertLivePullCount(pullData: PullData[], totalPullCountToday: number, repository: string): PullData[] {
 
     // Look if there is a value for today. If so, overwrite the total pull count by the given value.
     let pullDataTodayIndex = pullData.findIndex(pd => moment(pd.date).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD"));
@@ -33,8 +54,7 @@ function insertLivePullCount(pullData: PullData[], totalPullCountToday: number):
             pullsToday: 0,
             pullsTotal: totalPullCountToday,
             id: moment().date().toString(),
-            starsToday: 0,
-            starsTotal: 0 
+            repository: repository
         });
 
         // Also set the index to the last index (which was just added).
@@ -88,8 +108,8 @@ function fillDataGaps(data: { [key: string]: number } = {}) {
     // Get the keys as categories.
     let categories = Object.keys(data) || [];
 
-    // Generate up to 7 days as categories, if there isn't 7 days of data.
-    for (let day = 6; day >= 0; day--) {
+    // Generate up to 30 days as categories, if there isn't 30 days of data.
+    for (let day = 29; day >= 0; day--) {
         const date = moment().subtract(day, 'days').format("YYYY-MM-DD");
         if (!categories.includes(date)) {
             categories.push(date);

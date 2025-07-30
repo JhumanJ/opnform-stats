@@ -17,9 +17,20 @@ datasource db {
 model PullData {
   id String @id @default(uuid())
 
+  repository String // Repository name (e.g., "opnform-api", "opnform-client")
   date       DateTime @default(now())
   pullsToday Int
   pullsTotal Int
+
+  @@unique([repository, date])
+}
+
+model GitHubStarsData {
+  id String @id @default(uuid())
+
+  date       DateTime @default(now())
   starsToday Int
   starsTotal Int
+
+  @@unique([date])
 }

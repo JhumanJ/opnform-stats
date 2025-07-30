@@ -124,10 +124,17 @@ export default function ChartComponent({ params }: { params: ChartComponentOptio
 
     return (
         <div className="w-full">
-            <div>
-                <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-slate-200 pb-2">{params.chartValue}</h5>
-                <p className="text-base font-normal text-gray-500 dark:text-gray-400">{params.chartName}</p>
-            </div>
+            {/* Only show title/value if they have meaningful content */}
+            {(params.chartValue > 0 || params.chartName) && (
+                <div>
+                    {params.chartValue > 0 && (
+                        <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-slate-200 pb-2">{params.chartValue}</h5>
+                    )}
+                    {params.chartName && (
+                        <p className="text-base font-normal text-gray-500 dark:text-gray-400">{params.chartName}</p>
+                    )}
+                </div>
+            )}
             <ApexCharts type="area" options={option} series={series} />
         </div>
     )

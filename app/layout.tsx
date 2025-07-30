@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: `${process.env.APP_NAME} – Docker Pull Stats`,
-  description: `${process.env.APP_NAME} - Docker Pull Stats`,
+  title: `OpnForm – Docker Pull Stats`,
+  description: `OpnForm - Docker Pull Stats`,
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
