@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { Container, Loader2 } from "lucide-react";
+import moment from "moment";
 
 import { Menu } from "@/components/menu";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,15 @@ export default async function Home() {
   const daysWithData = pullDataArray.length > 0 ? Object.keys(pullDataArray[0].pullsUnique).length : 30;
   const averagePullsPerDay = Math.round(totalDailyPulls / Math.max(daysWithData, 1));
 
+  // Calculate today's stats
+  const today = moment().format("YYYY-MM-DD");
+  const pullsToday = pullDataArray.reduce((sum, repo) => {
+    const todayPulls = repo.pullsUnique[today] || 0;
+    return sum + todayPulls;
+  }, 0);
+  
+  const starsToday = gitHubStarsData.starsUnique[today] || 0;
+
   // Create separate series for each repository
   const apiRepoData = pullDataArray.find(repo => repo.repository === 'opnform-api');
   const clientRepoData = pullDataArray.find(repo => repo.repository === 'opnform-client');
@@ -76,7 +86,7 @@ export default async function Home() {
         <div className="container flex h-20 max-w-(--breakpoint-xl) items-center flex-row">
           <img src="/logo.svg" alt="Logo" className="h-8 w-8 mr-3" />
           <Link href="/" className="space-x-2 flex text-xl">
-            OpnForm - Docker Pull Stats
+            OpnForm - Stats
           </Link>
           <Menu />
         </div>
@@ -117,18 +127,26 @@ export default async function Home() {
           <div className="flex flex-col w-full lg:w-2/3">
             {/* Stats Above Charts */}
             <div className="mb-4 text-center lg:text-left">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 <div>
                   <h2 className="text-4xl font-bold text-gray-900 dark:text-slate-200">{totalPullCount.toLocaleString()}</h2>
-                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Total pulls (Combined)</p>
+                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Total pulls</p>
+                </div>
+                <div>
+                  <h2 className="text-4xl font-bold text-green-600 dark:text-green-400">+{pullsToday.toLocaleString()}</h2>
+                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Pulls today</p>
                 </div>
                 <div>
                   <h2 className="text-4xl font-bold text-gray-900 dark:text-slate-200">{averagePullsPerDay.toLocaleString()}</h2>
-                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Average pulls/day</p>
+                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Avg pulls/day</p>
                 </div>
                 <div>
                   <h2 className="text-4xl font-bold text-gray-900 dark:text-slate-200">{gitHubStarsData.totalStarsCount.toLocaleString()}</h2>
                   <p className="text-lg font-normal text-gray-500 dark:text-gray-400">GitHub Stars</p>
+                </div>
+                <div>
+                  <h2 className="text-4xl font-bold text-yellow-500 dark:text-yellow-400">+{starsToday.toLocaleString()}</h2>
+                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Stars today</p>
                 </div>
               </div>
             </div>
