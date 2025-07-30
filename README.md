@@ -2,7 +2,7 @@
 
 A customized version of Docker Pull Stats specifically adapted for tracking [OpnForm](https://opnform.com) project metrics.
 
-This webapp tracks both Docker Hub pull statistics and GitHub stars for the OpnForm project, updating every hour. It displays:
+This webapp tracks both Docker Hub pull statistics and GitHub stars for the OpnForm project, updating daily at 3 AM UTC. It displays:
 
 - **Docker Hub pulls** for OpnForm API and Client containers
 - **GitHub stars** from the [OpnForm repository](https://github.com/JhumanJ/opnform)
@@ -15,7 +15,7 @@ This is a customized adaptation of the original [Docker Pull Stats](https://gith
 
 - **OpnForm Integration**: Hardcoded to track OpnForm repositories (`jhumanj/opnform-api` and `jhumanj/opnform-client`)
 - **GitHub Stars Tracking**: Added GitHub API integration to track repository stars alongside Docker pulls
-- **Hourly Updates**: Changed from daily to hourly data collection
+- **Daily Updates**: Collects data daily at 3 AM UTC
 - **Dual Charts**: Separate visualizations for Docker pulls and GitHub stars
 - **Simplified Authentication**: Removed cron job authentication for public APIs
 - **OpnForm Branding**: Updated UI with OpnForm branding and links
@@ -48,10 +48,10 @@ Currently it stores Docker `pull_count` and GitHub `stargazers_count` for each d
 
 ### Variables
 
-| Variable               | Description                                                | Required (y/n) |
-| ---------------------- | ---------------------------------------------------------- | -------------- |
-| TELEGRAM_BOT_TOKEN[^1] | Telegram Bot token, if you want hourly updates in Telegram | No             |
-| TELEGRAM_BOT_CHAT_ID   | Telegram chat id, if you want hourly updates in Telegram   | No             |
+| Variable               | Description                                               | Required (y/n) |
+| ---------------------- | --------------------------------------------------------- | -------------- |
+| TELEGRAM_BOT_TOKEN[^1] | Telegram Bot token, if you want daily updates in Telegram | No             |
+| TELEGRAM_BOT_CHAT_ID   | Telegram chat id, if you want daily updates in Telegram   | No             |
 
 **Note**: No Docker endpoints or authentication secrets are needed - the app is preconfigured for OpnForm repositories and uses public APIs.
 
@@ -71,7 +71,7 @@ The application automatically tracks:
 
 ### Update Frequency
 
-- **Hourly**: Data is collected every hour via Vercel cron jobs
+- **Daily**: Data is collected every day at 3 AM UTC via Vercel cron jobs
 - **Real-time**: Current stats are fetched live for display
 
 ## Database Schema
