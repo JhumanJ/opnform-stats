@@ -5,7 +5,7 @@ A customized version of Docker Pull Stats specifically adapted for tracking [Opn
 This webapp tracks both Docker Hub pull statistics and GitHub stars for the OpnForm project, updating daily at 3 AM UTC. It displays:
 
 - **Docker Hub pulls** for OpnForm API and Client containers
-- **GitHub stars** from the [OpnForm repository](https://github.com/JhumanJ/opnform)
+- **GitHub stars** from the [OpnForm repository](https://github.com/opnform/opnform)
 - Historical charts and daily/hourly trends
 - Combined statistics and individual repository breakdowns
 
@@ -66,7 +66,7 @@ The application automatically tracks:
 
 ### GitHub Metrics
 
-- **Repository Stars**: Total stars from [JhumanJ/opnform](https://github.com/JhumanJ/opnform)
+- **Repository Stars**: Total stars from [opnform/opnform](https://github.com/opnform/opnform)
 - **Daily Star Growth**: New stars gained each day
 
 ### Update Frequency

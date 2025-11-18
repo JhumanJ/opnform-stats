@@ -27,7 +27,7 @@ export function Menu() {
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <Link href="https://github.com/JhumanJ/opnform" target="_blank">
+                        <Link href="https://github.com/opnform/opnform" target="_blank">
                             <Button variant="outline" size="icon">
                                 <Github width={16} height={16} />
                             </Button>
