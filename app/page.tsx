@@ -40,6 +40,9 @@ export default async function Home() {
   const daysWithData = pullDataArray.length > 0 ? Object.keys(pullDataArray[0].pullsUnique).length : 30;
   const averagePullsPerDay = Math.round(totalDailyPulls / Math.max(daysWithData, 1));
 
+  const dailyStars = Object.values(gitHubStarsData.starsUnique);
+  const averageStarsPerDay = dailyStars.reduce((sum, stars) => sum + stars, 0) / Math.max(dailyStars.length, 1);
+
   // Calculate today's stats
   const today = moment().format("YYYY-MM-DD");
   const pullsToday = pullDataArray.reduce((sum, repo) => {
@@ -127,7 +130,7 @@ export default async function Home() {
           <div className="flex flex-col w-full lg:w-2/3">
             {/* Stats Above Charts */}
             <div className="mb-4 text-center lg:text-left">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <h2 className="text-4xl font-bold text-gray-900 dark:text-slate-200">{totalPullCount.toLocaleString()}</h2>
                   <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Total pulls</p>
@@ -147,6 +150,10 @@ export default async function Home() {
                 <div>
                   <h2 className="text-4xl font-bold text-yellow-500 dark:text-yellow-400">+{starsToday.toLocaleString()}</h2>
                   <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Stars today</p>
+                </div>
+                <div>
+                  <h2 className="text-4xl font-bold text-gray-900 dark:text-slate-200">{averageStarsPerDay.toLocaleString(undefined, { maximumFractionDigits: 1 })}</h2>
+                  <p className="text-lg font-normal text-gray-500 dark:text-gray-400">Avg stars/day</p>
                 </div>
               </div>
             </div>
